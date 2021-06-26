@@ -515,7 +515,8 @@ static void __init map_mem(pgd_t *pgdp)
 	 */
 	BUILD_BUG_ON(pgd_index(direct_map_end - 1) == pgd_index(direct_map_end));
 
-	if (rodata_full || crash_mem_map || debug_pagealloc_enabled())
+	if (rodata_full || crash_mem_map || debug_pagealloc_enabled() ||
+	    IS_ENABLED(CONFIG_KFENCE))
 		flags |= NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
 
 	/*
@@ -1113,7 +1114,6 @@ static void free_empty_tables(unsigned long addr, unsigned long end,
 }
 #endif
 
-#ifdef CONFIG_SPARSEMEM_VMEMMAP
 #if !ARM64_SWAPPER_USES_SECTION_MAPS
 int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
 		struct vmem_altmap *altmap)
@@ -1177,7 +1177,6 @@ void vmemmap_free(unsigned long start, unsigned long end,
 	free_empty_tables(start, end, VMEMMAP_START, VMEMMAP_END);
 #endif
 }
-#endif	/* CONFIG_SPARSEMEM_VMEMMAP */
 
 static inline pud_t *fixmap_pud(unsigned long addr)
 {

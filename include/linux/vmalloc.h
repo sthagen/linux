@@ -33,7 +33,7 @@ struct notifier_block;		/* in notifier.h */
  *
  * If IS_ENABLED(CONFIG_KASAN_VMALLOC), VM_KASAN is set on a vm_struct after
  * shadow memory has been mapped. It's used to handle allocation errors so that
- * we don't try to poision shadow on free if it was never allocated.
+ * we don't try to poison shadow on free if it was never allocated.
  *
  * Otherwise, VM_KASAN is set for kasan_module_alloc() allocations and used to
  * determine which allocations need the module shadow freed.
@@ -43,7 +43,7 @@ struct notifier_block;		/* in notifier.h */
 
 /*
  * Maximum alignment for ioremap() regions.
- * Can be overriden by arch-specific value.
+ * Can be overridden by arch-specific value.
  */
 #ifndef IOREMAP_MAX_ORDER
 #define IOREMAP_MAX_ORDER	(7 + PAGE_SHIFT)	/* 128 pages */
@@ -135,6 +135,7 @@ extern void *__vmalloc_node_range(unsigned long size, unsigned long align,
 			const void *caller);
 void *__vmalloc_node(unsigned long size, unsigned long align, gfp_t gfp_mask,
 		int node, const void *caller);
+void *vmalloc_no_huge(unsigned long size);
 
 extern void vfree(const void *addr);
 extern void vfree_atomic(const void *addr);
@@ -227,9 +228,8 @@ static inline void set_vm_flush_reset_perms(void *addr)
 }
 #endif
 
-/* for /dev/kmem */
+/* for /proc/kcore */
 extern long vread(char *buf, char *addr, unsigned long count);
-extern long vwrite(char *buf, char *addr, unsigned long count);
 
 /*
  *	Internals.  Dont't use..

@@ -240,7 +240,7 @@ gen_btf()
 	fi
 
 	info "BTF" ${2}
-	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${extra_paholeopt} ${1}
+	LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J ${extra_paholeopt} ${1}
 
 	# Create ${2} which contains just .BTF section but no symbols. Add
 	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
@@ -319,20 +319,6 @@ cleanup()
 	rm -f vmlinux.o
 	rm -f .vmlinux.d
 }
-
-on_exit()
-{
-	if [ $? -ne 0 ]; then
-		cleanup
-	fi
-}
-trap on_exit EXIT
-
-on_signals()
-{
-	exit 1
-}
-trap on_signals HUP INT QUIT TERM
 
 # Use "make V=1" to debug this script
 case "${KBUILD_VERBOSE}" in
